@@ -1,0 +1,26 @@
+[{
+    "id": 1,
+    "task": "Give dog a bath",
+    "complete": true,
+    "creationDate" : "11.08.22",
+    "dueDate" : "12.08.22"
+  }, {
+    "id": 2,
+    "task": "Do laundry",
+    "complete": true,
+    "creationDate" : "11.08.22",
+    "dueDate" : "13.08.22"
+  }, {
+    "id": 3,
+    "task": "Vacuum floor",
+    "complete": false,
+    "creationDate" : "10.08.22",
+    "dueDate" : "12.08.22"
+  }, {
+    "id": 4,
+    "task": "Delete me!",
+    "complete": false,
+    "creationDate" : "10.08.22",
+    "dueDate" : "12.08.22"
+  }
+]

@@ -1,15 +1,14 @@
 export interface DbItem {
-  "task": "Give dog a bath",
-  "complete": true,
-  "creationDate" : "11.08.22",
-  "dueDate" : "12.08.22"
+  "task": string,
+  "dueDate" : string
 }
 
 export interface DbItemWithId extends DbItem {
   id: number;
+  creationDate: string;
 }
 
-const db: DbItemWithId[] = [];
+export const toDo: DbItemWithId[] = [];
 
 /** Variable to keep incrementing id of database items */
 let idCounter = 0;
@@ -38,11 +37,13 @@ export const addDummyDbItems = (n: number): DbItemWithId[] => {
  * @returns the item added (with a newly created id)
  */
 export const addDbItem = (data: DbItem): DbItemWithId => {
+  const date = Date()
   const newEntry: DbItemWithId = {
     id: ++idCounter,
     ...data,
+    creationDate: date
   };
-  db.push(newEntry);
+  toDo.push(newEntry);
   return newEntry;
 };
 
@@ -57,7 +58,7 @@ export const deleteDbItemById = (id: number): DbItemWithId | "not found" => {
   const idxToDeleteAt = findIndexOfDbItemById(id);
   if (typeof idxToDeleteAt === "number") {
     const itemToDelete = getDbItemById(id);
-    db.splice(idxToDeleteAt, 1); // .splice can delete from an array
+    toDo.splice(idxToDeleteAt, 1); // .splice can delete from an array
     return itemToDelete;
   } else {
     return "not found";
@@ -72,7 +73,7 @@ export const deleteDbItemById = (id: number): DbItemWithId | "not found" => {
  *  otherwise the string `"not found"`
  */
 const findIndexOfDbItemById = (id: number): number | "not found" => {
-  const matchingIdx = db.findIndex((entry) => entry.id === id);
+  const matchingIdx = toDo.findIndex((entry) => entry.id === id);
   // .findIndex returns -1 if not located
   if (matchingIdx !== -1) {
     return matchingIdx;
@@ -86,7 +87,7 @@ const findIndexOfDbItemById = (id: number): number | "not found" => {
  * @returns all database items from the database
  */
 export const getAllDbItems = (): DbItemWithId[] => {
-  return db;
+  return toDo;
 };
 
 /**
@@ -97,7 +98,7 @@ export const getAllDbItems = (): DbItemWithId[] => {
  *  otherwise the string `"not found"`
  */
 export const getDbItemById = (id: number): DbItemWithId | "not found" => {
-  const maybeEntry = db.find((entry) => entry.id === id);
+  const maybeEntry = toDo.find((entry) => entry.id === id);
   if (maybeEntry) {
     return maybeEntry;
   } else {
@@ -121,7 +122,7 @@ export const updateDbItemById = (
   const idxOfEntry = findIndexOfDbItemById(id);
   // type guard against "not found"
   if (typeof idxOfEntry === "number") {
-    return Object.assign(db[idxOfEntry], newData);
+    return Object.assign(toDo[idxOfEntry], newData);
   } else {
     return "not found";
   }

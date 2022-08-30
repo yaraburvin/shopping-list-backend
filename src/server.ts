@@ -2,14 +2,17 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import {
+  toDo,
   addDbItem,
   getAllDbItems,
   getDbItemById,
   DbItem,
   updateDbItemById,
+  deleteDbItemById,
+  DbItemWithId,
 } from "./db";
 import filePath from "./filePath";
-import data from "./data.json"
+
 
 
 
@@ -37,49 +40,44 @@ app.get("/", (req, res) => {
 });
 
 // GET /items
-app.get("/getData", (req, res) => {
+app.get("/tasks", (req, res) => {
   res.json(
-    data
+    toDo
   )
 });
 
+
+
 // POST /items
-app.post<{}, {}, DbItem>("/addTask", (req, res) => {
-  
+app.post<{}, {}, DbItem>("/tasks", (req, res) => {
   const postData = req.body;
   const createdSignature = addDbItem(postData);
   res.status(201).json(createdSignature);
 });
 
-// GET /items/:id
-app.get<{ id: string }>("/items/:id", (req, res) => {
-  const matchingSignature = getDbItemById(parseInt(req.params.id));
-  if (matchingSignature === "not found") {
-    res.status(404).json(matchingSignature);
+
+
+// Get /tasks/:id
+app.get<{ TaskId: string }>("/tasks/:TaskId", (req, res) => {
+  const targetTaskId = parseInt(req.params.TaskId)
+  const matchingTask = toDo.find((task) => task.id === targetTaskId);
+  if (matchingTask) {
+    res.json(matchingTask)
   } else {
-    res.status(200).json(matchingSignature);
+    res.status(404).send("No matching task found");
   }
 });
 
-// DELETE /items/:id
-app.delete<{ id: string }>("/task/:id", (req, res) => {
-  const matchingSignature = getDbItemById(parseInt(req.params.id));
-  if (matchingSignature === "not found") {
-    res.status(404).json(matchingSignature);
+app.delete<{ TaskId: string }>("/tasks/:TaskId", (req, res) => {
+  const targetTaskId = parseInt(req.params.TaskId)
+  if (targetTaskId) {
+    let updtedtoDos = toDo.filter((task) => task.id !== targetTaskId);
+    res.json(updtedtoDos)
   } else {
-    res.status(200).json(matchingSignature);
+    res.status(404).send("Task couldnot have been deleted as no matching task found");
   }
 });
 
-// PATCH /items/:id
-app.patch<{ id: string }, {}, Partial<DbItem>>("/items/:id", (req, res) => {
-  const matchingSignature = updateDbItemById(parseInt(req.params.id), req.body);
-  if (matchingSignature === "not found") {
-    res.status(404).json(matchingSignature);
-  } else {
-    res.status(200).json(matchingSignature);
-  }
-});
 
 app.listen(PORT_NUMBER, () => {
   console.log(`Server is listening on port ${PORT_NUMBER}!`);

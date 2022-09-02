@@ -1,6 +1,6 @@
 export interface DbItem {
-  "task": string,
-  "dueDate" : string
+  task: string;
+  dueDate: string;
 }
 
 export interface DbItemWithId extends DbItem {
@@ -37,11 +37,11 @@ export const addDummyDbItems = (n: number): DbItemWithId[] => {
  * @returns the item added (with a newly created id)
  */
 export const addDbItem = (data: DbItem): DbItemWithId => {
-  const date = Date()
+  const date = Date();
   const newEntry: DbItemWithId = {
     id: ++idCounter,
     ...data,
-    creationDate: date
+    creationDate: date,
   };
   toDo.push(newEntry);
   return newEntry;
